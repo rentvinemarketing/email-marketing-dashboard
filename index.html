@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    color-scheme: light;
+    --vine: #00A54F;
+    --dew: #CAF5DF;
+    --blue: #167FE1;
+    --sky: #BCE5FF;
+    --night: #111111;
+    --white: #FFFFFF;
+    --smoke: #494949;
+    --stone: #7E7E7E;
+    --grey: #B1B1B1;
+    --paper: #F1F1F1;
+    --honey: #FFB31F;
+    --oat: #FFCC6A;
+    --lava: #F84848;
+    --grape: #984FE2;
+    --lavender: #C59AF1;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--white);
+    color: var(--night);
+    font-family: 'Manrope', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  .dashboard { max-width: 980px; margin: 0 auto; padding: 0 0 32px; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(180deg, var(--vine) 0%, var(--blue) 100%);
+    border-radius: 0 0 16px 16px;
+    padding: 22px 28px;
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .header .brand {
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.2px;
+  }
+  .header .brand span { text-transform: lowercase; }
+  .header .title {
+    font-size: 13px;
+    opacity: 0.92;
+    margin-top: 2px;
+  }
+  .header .meta {
+    text-align: right;
+    font-size: 12px;
+    opacity: 0.9;
+  }
+
+  .section { padding: 24px 28px 0; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-head h2 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 800;
+  }
+  .badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge.placeholder { background: #FFF3DA; color: #9A6A00; }
+  .badge.snapshot { background: var(--sky); color: #0A5A9C; }
+  .badge.live { background: var(--dew); color: #037F4C; }
+  .badge.live::before {
+    content: "";
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--vine);
+    margin-right: 5px;
+  }
+
+  /* KPI cards */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .kpi {
+    background: var(--white);
+    border: 1px solid var(--paper);
+    border-top: 3px solid var(--vine);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .kpi .value {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .kpi .label {
+    font-size: 12.5px;
+    color: var(--stone);
+    margin-top: 4px;
+  }
+  .kpi .delta {
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .kpi .delta.up { color: #037F4C; }
+  .kpi .delta.down { color: var(--lava); }
+  .kpi .delta.watch { color: #9A6A00; }
+
+  /* Strengths */
+  .strengths {
+    background: var(--dew);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .strengths h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #045c2c;
+  }
+  .strengths ul { list-style: none; margin: 0; padding: 0; }
+  .strengths li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: var(--night);
+    padding: 6px 0;
+    line-height: 1.4;
+  }
+  .strengths li svg { flex-shrink: 0; margin-top: 2px; }
+
+  /* Upcoming table */
+  .table-wrap {
+    border: 1px solid var(--paper);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left;
+    background: var(--paper);
+    color: var(--smoke);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 10px 14px;
+  }
+  tbody td {
+    padding: 12px 14px;
+    border-top: 1px solid var(--paper);
+    vertical-align: top;
+  }
+  tbody tr:hover { background: #FAFAFA; }
+  .email-name { font-weight: 700; }
+  .audience { color: var(--stone); font-size: 12px; margin-top: 2px; }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .send-date .abs { font-weight: 600; }
+  .send-date .rel { color: var(--stone); font-size: 11.5px; margin-top: 2px; }
+
+  .footer {
+    padding: 20px 28px 0;
+    font-size: 11px;
+    color: var(--grey);
+    line-height: 1.6;
+  }
+
+  .empty-state, .error-state {
+    padding: 24px;
+    text-align: center;
+    color: var(--stone);
+    font-size: 13px;
+  }
+  .error-state { color: var(--lava); }
+
+  .skeleton {
+    background: linear-gradient(90deg, var(--paper) 25%, #e9e9e9 37%, var(--paper) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+    border-radius: 6px;
+    height: 14px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+
+  <div class="header">
+    <div>
+      <div class="brand"><span>rentvine</span></div>
+      <div class="title">Email Marketing — Executive Dashboard</div>
+    </div>
+    <div class="meta" id="lastUpdated">Loading&hellip;</div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Jun 19 – Jul 18, 2026 — HubSpot email performance</h2>
+      <span class="badge snapshot">Snapshot from HubSpot Email Health &middot; Jul 21, 2026</span>
+    </div>
+    <div class="kpis">
+      <div class="kpi">
+        <div class="value">37.3%</div>
+        <div class="label">Avg. open rate</div>
+        <div class="delta up">&#9650; Excellent — vs. 19% industry benchmark</div>
+      </div>
+      <div class="kpi">
+        <div class="value">5.8%</div>
+        <div class="label">Avg. click-through rate</div>
+        <div class="delta watch">&#9660; Okay — vs. 7.5% industry benchmark</div>
+      </div>
+      <div class="kpi">
+        <div class="value">8/10</div>
+        <div class="label">Overall email health score</div>
+        <div class="delta up">&#9650; Very good — strong sending reputation</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="strengths">
+      <h3>What&rsquo;s working</h3>
+      <ul>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#037F4C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span><strong>Open rates are nearly 2x industry benchmark</strong> — 37.3% vs. 19% for Computer Software (HubSpot benchmark).</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#037F4C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span><strong>Deliverability is strong</strong> — hard bounces (0.18%) and unsubscribes (0.32%) both beat benchmark.</span>
+        </li>
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9A6A00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
+          <span><strong>Watch:</strong> click-through rate (5.8%) is below the 7.5% benchmark — worth a look at CTAs/content.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Upcoming sends</h2>
+      <span class="badge live" id="liveBadge">Live &middot; Monday.com</span>
+    </div>
+    <div class="table-wrap" id="upcomingWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Send date</th>
+            <th>Audience</th>
+            <th>Status</th>
+            <th>Brand</th>
+          </tr>
+        </thead>
+        <tbody id="upcomingBody">
+          <tr><td colspan="5"><div class="skeleton"></div></td></tr>
+          <tr><td colspan="5"><div class="skeleton"></div></td></tr>
+          <tr><td colspan="5"><div class="skeleton"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    HubSpot email performance: manual snapshot from Email Health (app.hubspot.com/email/9252921/health), Jun 19&ndash;Jul 18, 2026, compared to HubSpot&rsquo;s Computer Software industry benchmark. This section is a manual snapshot and won&rsquo;t auto-refresh until it&rsquo;s updated by hand.<br>
+    Upcoming sends: live from the &ldquo;Email Marketing Planner&rdquo; board on Monday.com (Upcoming Campaigns group), fetched fresh on every page load via a Netlify serverless function.
+  </div>
+
+</div>
+
+<script>
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function relDays(iso) {
+    if (!iso) return '';
+    var today = new Date(); today.setHours(0,0,0,0);
+    var d = new Date(iso + 'T00:00:00');
+    var diff = Math.round((d - today) / 86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Tomorrow';
+    if (diff > 1) return 'in ' + diff + ' days';
+    return diff + ' days ago';
+  }
+
+  var STATUS_COLORS = {
+    'Working on it': { bg: '#FFF3DA', fg: '#9A6A00' },
+    'Review Content': { bg: '#E5F1FD', fg: '#0F5FA8' },
+    'Content': { bg: '#F5EBFF', fg: '#6C2FA0' },
+    'Approved Ready For Hubspot': { bg: '#FFE7DA', fg: '#B84B1A' },
+    'Approved Ready For Schedule': { bg: '#EAF7DA', fg: '#4E7A1B' },
+    'Ready but waiting on list': { bg: '#DDF6E8', fg: '#037F4C' },
+    'Scheduled': { bg: '#DDF6F4', fg: '#227F78' },
+    'On Hold': { bg: '#EDEDF2', fg: '#5C5C6E' },
+    'Stuck': { bg: '#FCE3E7', fg: '#B5233B' },
+    'Clone Template': { bg: '#E5F1FD', fg: '#0F5FA8' }
+  };
+
+  var BRAND_COLORS = {
+    'PMW': { bg: '#E5F6FF', fg: '#0A6FB8' },
+    'RV & PMW': { bg: '#DFF7F5', fg: '#227F78' },
+    'Rentvine': { bg: '#DDF6E8', fg: '#037F4C' }
+  };
+
+  function pill(text, map) {
+    var c = (map && map[text]) || { bg: '#F1F1F1', fg: '#494949' };
+    return '<span class="pill" style="background:' + c.bg + ';color:' + c.fg + '">' + (text || '—') + '</span>';
+  }
+
+  async function loadUpcoming() {
+    var body = document.getElementById('upcomingBody');
+    var wrap = document.getElementById('upcomingWrap');
+    try {
+      var res = await fetch('/.netlify/functions/upcoming-sends');
+      var data = await res.json();
+
+      if (!res.ok || data.error) throw new Error('Fetch failed');
+
+      var items = data.items || [];
+
+      var upcoming = items.filter(function (it) {
+        var group = it.group && it.group.id;
+        var status = it.column_values && it.column_values.status8;
+        return group === 'topics' && status !== 'Sent';
+      });
+
+      upcoming.sort(function (a, b) {
+        return (a.column_values.date || '').localeCompare(b.column_values.date || '');
+      });
+
+      upcoming = upcoming.slice(0, 5);
+
+      if (upcoming.length === 0) {
+        wrap.innerHTML = '<div class="empty-state">No upcoming sends found in the Upcoming Campaigns group.</div>';
+      } else {
+        body.innerHTML = upcoming.map(function (it) {
+          var cv = it.column_values;
+          return '<tr>' +
+            '<td><div class="email-name">' + (it.name || 'Untitled') + '</div></td>' +
+            '<td class="send-date"><div class="abs">' + fmtDate(cv.date) + '</div><div class="rel">' + relDays(cv.date) + '</div></td>' +
+            '<td><div class="audience">' + (cv.status_12 || '—') + '</div></td>' +
+            '<td>' + pill(cv.status8, STATUS_COLORS) + '</td>' +
+            '<td>' + pill(cv.status__1, BRAND_COLORS) + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+
+      document.getElementById('lastUpdated').textContent =
+        'Updated ' + new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+    } catch (err) {
+      wrap.innerHTML = '<div class="error-state">Couldn\'t load upcoming sends from Monday.com. Try reloading this view.</div>';
+      document.getElementById('liveBadge').textContent = 'Sync failed';
+      document.getElementById('liveBadge').className = 'badge placeholder';
+      document.getElementById('lastUpdated').textContent = 'Update failed';
+    }
+  }
+
+  loadUpcoming();
+  // Re-fetch every 5 minutes so the page stays current for anyone leaving it open.
+  setInterval(loadUpcoming, 5 * 60 * 1000);
+</script>
+
+</body>
+</html>
